@@ -1,0 +1,41 @@
+---
+title: "HW2"
+author: "XihaoCao"
+date: "2021/10/8"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## R Markdown
+
+```{r echo=FALSE, results='hide', warning=FALSE, include=FALSE}
+library(tidyverse)
+library(magrittr)
+gdp <-  read.csv('D:/作业/msspFall/MA615/HW/HW2/gdp.csv', header=T, encoding='utf-8')
+invest <- read.csv('D:/作业/msspFall/MA615/HW/HW2/investments.csv', header=T, encoding='utf-8')
+as_tibble(gdp)
+as_tibble(invest)
+
+#drop the na value in the data and only keep the data between 1960-2005
+source('wrangling.R')
+new_gdp <- na_and_cut(gdp, c(1960, 2005))
+new_invest <- na_and_cut(invest, c(1960, 2005))
+
+#only keep the desired countries and combine the two data sets
+country <- c('France', 'Turkey', 'Mexico', 'India', 'Egypt')
+df_list <- select_combine(new_gdp, new_invest, country)
+new_gdp <- df_list[[1]]
+new_invest <- df_list[[2]]
+```
+
+
+```{r echo=FALSE, error=FALSE, warning=FALSE}
+source('visualization.R')
+'By plotting the GDP growth of five selected country and their new investment ratio (% of GDP in 2003), we can notice that there is a positive correlation bewteen the GDP growth and the amount of new investment. However, India had more new investment than Turkey in 2003 but with a lower GDP growth, which shows that the amount of new investment is not the only factor that affects the GDP growth, we should add more variables to explore the relationships. If desired, the user can change the input year, countries list in the original R script to view data of different countires in different year.'
+plot_one_year(new_gdp, 2003, 'GDP growth in 2003')
+plot_one_year(new_invest, 2003, 'New investment % of GDP in 2003')
+```
+
